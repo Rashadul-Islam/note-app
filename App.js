@@ -7,11 +7,13 @@ import SignIn from "./src/screens/SignIn";
 import Create from "./src/screens/Create";
 import Edit from "./src/screens/Edit";
 import { useFonts } from "expo-font";
-import FlashMessage from "react-native-flash-message";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase.config";
 import ViewNote from "./src/screens/ViewNote";
+import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 const appTheme = {
@@ -31,13 +33,37 @@ export default function App() {
       if (user) {
         setUser(user);
         setLoading(false);
+        storeData(user);
       } else {
-        setUser(null);
-        setLoading(false);
+        getData();
       }
     });
     return authCheck;
   }, []);
+
+  const storeData = async (user) => {
+    try {
+      await AsyncStorage.setItem("userData", jsonValue);
+    } catch (e) {
+      showMessage({ message: "User data not stored...!", type: "danger" });
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("userData");
+      if (value !== null) {
+        setUser(JSON.parse(value));
+        setLoading(false);
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    } catch (e) {
+      setUser(null);
+      setLoading(false);
+    }
+  };
 
   const [loaded] = useFonts({
     "Encode-Medium": require("./assets/fonts/EncodeSans-SemiBold.ttf"),
@@ -63,11 +89,12 @@ export default function App() {
 
   return (
     <NavigationContainer theme={appTheme}>
+      <StatusBar style="dark" />
       <Stack.Navigator>
         {user ? (
           <>
             <Stack.Screen name="home" options={{ headerShown: false }}>
-              {(props) => <Home {...props} user={user} />}
+              {(props) => <Home {...props} user={user} setUser={setUser} />}
             </Stack.Screen>
             <Stack.Screen name="create" options={{ headerShown: false }}>
               {(props) => <Create {...props} user={user} />}

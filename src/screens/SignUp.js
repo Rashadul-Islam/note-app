@@ -23,24 +23,33 @@ export default function SignUp({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
-    setLoading(true);
-    try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await addDoc(collection(db, "users"), {
-        name: name,
-        email: email,
-        age: age,
-        gender: gender,
-        uid: result.user.uid,
-      });
-      setLoading(false);
-    } catch (error) {
-      showMessage({ message: error.message, type: "danger" });
-      setLoading(false);
+    if (
+      email !== "" &&
+      password !== "" &&
+      name !== "" &&
+      age !== "" &&
+      gender !== ""
+    ) {
+      setLoading(true);
+      try {
+        const result = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        await addDoc(collection(db, "users"), {
+          name: name,
+          age: age,
+          gender: gender,
+          uid: result.user.uid,
+        });
+        setLoading(false);
+      } catch (error) {
+        showMessage({ message: error.message, type: "danger" });
+        setLoading(false);
+      }
+    } else {
+      showMessage({ message: "All input must be filled...!", type: "danger" });
     }
   };
 

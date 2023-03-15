@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  FlatList,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, StyleSheet, Pressable, FlatList, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,10 +7,10 @@ import { spacing } from "../theme/spacing";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../firebase.config";
 import Note from "../components/Note";
-import { colors } from "../theme/colors";
 import Button from "../components/Button/Button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Home({ navigation, user }) {
+export default function Home({ navigation, user, setUser }) {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -32,14 +25,39 @@ export default function Home({ navigation, user }) {
     return listener;
   }, []);
 
+  const removeUser = async () => {
+    try {
+      await AsyncStorage.removeItem("userData");
+      setUser(null);
+    } catch (e) {
+      // remove error
+    }
+  };
+
   return (
     <SafeAreaView style={styles.HomeContainer}>
       <View style={styles.HomeTop}>
         <Text preset="h3">My Notes</Text>
-        {notes.length !== 0 && (
-          <Pressable onPress={() => navigation.navigate("create")}>
-            <AntDesign name="pluscircleo" size={24} color="blue" />
+        {notes.length === 0 && (
+          <Pressable style={styles.logout} onPress={() => removeUser()}>
+            <Text preset="h5" style={styles.logoutText}>
+              Logout
+            </Text>
+            <AntDesign name="logout" size={24} color="red" />
           </Pressable>
+        )}
+        {notes.length !== 0 && (
+          <View style={styles.userAction}>
+            <Pressable onPress={() => navigation.navigate("create")}>
+              <AntDesign name="pluscircleo" size={24} color="blue" />
+            </Pressable>
+            <Pressable style={styles.logout} onPress={() => removeUser()}>
+              <Text preset="h5" style={styles.logoutText}>
+                Logout
+              </Text>
+              <AntDesign name="logout" size={24} color="red" />
+            </Pressable>
+          </View>
         )}
       </View>
       {notes.length !== 0 ? (
@@ -103,5 +121,17 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: "center",
     marginTop: spacing[14],
+  },
+  userAction: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logout: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logoutText: {
+    marginLeft: spacing[5],
+    marginRight: spacing[1],
   },
 });
