@@ -20,6 +20,7 @@ export default function Input({
         secureTextEntry={secureTextEntry}
         multiline={multiline}
         value={value}
+        autoCapitalize="none"
       />
       {icon && (
         <Pressable

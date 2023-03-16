@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "rashed_note",
-    "slug": "rashed_note",
+    "slug": "native_practice_figma",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/adaptive-icon.png",
@@ -26,7 +26,7 @@
       "package": "com.rashed1720.native_practice_figma"
     },
     "web": {
-      "favicon": "./assets/adaptive-icon.png"
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {

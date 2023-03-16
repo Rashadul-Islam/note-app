@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: spacing[13],
   },
-  indicator: { marginTop: spacing[13] },
+  indicator: { height: 45, marginTop: spacing[13] },
   redirectArea: {
     flexDirection: "row",
     justifyContent: "center",

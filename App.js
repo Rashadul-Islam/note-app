@@ -41,8 +41,9 @@ export default function App() {
     return authCheck;
   }, []);
 
-  const storeData = async (user) => {
+  const storeData = async (userData) => {
     try {
+      const jsonValue = JSON.stringify(userData);
       await AsyncStorage.setItem("userData", jsonValue);
     } catch (e) {
       showMessage({ message: "User data not stored...!", type: "danger" });

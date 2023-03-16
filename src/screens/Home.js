@@ -1,4 +1,11 @@
-import { View, StyleSheet, Pressable, FlatList, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
@@ -12,8 +19,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home({ navigation, user, setUser }) {
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const q = query(collection(db, "notes"), where("uid", "==", user.uid));
     const listener = onSnapshot(q, (querySnapshot) => {
       const list = [];
@@ -21,6 +30,7 @@ export default function Home({ navigation, user, setUser }) {
         list.push({ ...doc.data(), id: doc.id });
       });
       setNotes(list);
+      setLoading(false);
     });
     return listener;
   }, []);
@@ -33,6 +43,14 @@ export default function Home({ navigation, user, setUser }) {
       // remove error
     }
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator color={"blue"} size={"large"} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.HomeContainer}>

@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: spacing[13],
   },
-  indicator: { marginTop: spacing[13] },
+  indicator: { marginTop: spacing[13], height: 45 },
   redirectArea: {
     flexDirection: "row",
     justifyContent: "center",
